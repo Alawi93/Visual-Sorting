@@ -1,0 +1,44 @@
+.node{
+    background-color: rgb(54, 54, 231);
+    color: white;
+    text-align:center;
+    font-size: 100%;
+    margin: 3px;
+    align-self: flex-end;
+    
+}
+/*
+animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+*/
+.chosen{
+  
+  background-color: #75d13f;
+  border: 1px solid #e50000;
+}
+
+@keyframes anim {
+    
+    to {
+      background-color: #e50000;
+      border-color: #75D13F;
+    }
+  }
+  
+  @keyframes anim-half {
+    50% {
+      background-color: #e50000;
+      border-color: #75D13F;
+    }
+  }
+
+/* { content: attr(style); */
+    /* "✅" */
+.chosen::after { 
+    position:relative;
+    bottom: 50px;
+    right: 5px;
+    background-size: 30px;
+    content: "👇";
+}
