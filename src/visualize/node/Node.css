@@ -7,13 +7,17 @@
     align-self: flex-end;
     
 }
+
+.chosen1{
+  background-color: #e50000;
+}
+
 /*
 animation-duration: 1s;
   animation-iteration-count: infinite;
   animation-direction: alternate;
 */
 .chosen{
-  
   background-color: #75d13f;
   border: 1px solid #e50000;
 }
