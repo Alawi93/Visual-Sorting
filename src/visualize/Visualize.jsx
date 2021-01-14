@@ -4,11 +4,15 @@ import Node from './node/Node';
 
 const randomNumbers = [];
 var totalData;
-var nodeWidth;
+var nodeWidth; // maybe remove
 
+// TO BE WORKED ON //
 //one we compare against
 var currentNode;
-var animation_speed;
+var animation_speed = 200;
+var stop = false;
+//
+
 // Returns a Promise that resolves after "ms" Milliseconds used for animation
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
@@ -24,7 +28,6 @@ export default class Visualize extends Component {
         totalData = 50
         //sets width to state value
         nodeWidth = 35;
-
         this.setState({dataArray: getDataArray()}); 
     }
 
@@ -41,91 +44,82 @@ export default class Visualize extends Component {
     //BUBBLE SORT
     // second bubblesort 
     //https://medium.com/javascript-algorithms/javascript-algorithms-bubble-sort-3d27f285c3b2
-    async bubbleSort(){
+    async bubbleSortEfficient(){
       const inputArr= this.state.dataArray
         let len = inputArr.length;
         let swapped;
-        
         do {
             swapped = false;
             for (let i = 0; i < len-1; i++) {
                 currentNode = inputArr[i].value;
             document.getElementById(`node-${inputArr[i].value}`).classList.add('chosen');
             document.getElementById(`node-${inputArr[i+1].value}`).classList.add('chosen');
-            await timer(200);
-                if (inputArr[i].value > inputArr[i + 1].value) {
-                    
+            //Stoping and starting animation
+            await this.waitUntil()
+                if (inputArr[i].value > inputArr[i + 1].value) { 
                     let tmp = inputArr[i];
                     inputArr[i] = inputArr[i + 1];
                     inputArr[i + 1] = tmp;
                     swapped = true;
                 this.setState({dataArray: inputArr})  
-                    
                 }
             document.getElementById(`node-${inputArr[i].value}`).classList.remove('chosen');
-            document.getElementById(`node-${inputArr[i+1].value}`).classList.remove('chosen');  
-        
-            
+            document.getElementById(`node-${inputArr[i+1].value}`).classList.remove('chosen');
         }
-  
-        } while (swapped);
-    
-          //color
-          // this.compare(arr[j-1].value,arr[j].value)
-         
-       
-          
+      } while (swapped);    
   }
 
-    //Animate
-    //Compare 
-    compare(first,second){
-    var firstNode   =  document.getElementById(`node-${first}`);
-    var secondNode  =  document.getElementById(`node-${second}`);
-    
-    firstNode.classList.add('chosen'); 
-    secondNode.classList.add('chosen'); 
-
-    setTimeout(function(){
-        firstNode.classList.remove('chosen') 
-        secondNode.classList.remove('chosen') 
-        }, 1000);
-    
+  async bubbleSort(){
+    const inputArr= this.state.dataArray;
+    let len = inputArr.length -1;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len; j++) {
+            currentNode = inputArr[j].value;
+            document.getElementById(`node-${inputArr[j].value}`).classList.add('chosen');
+            document.getElementById(`node-${inputArr[j+1].value}`).classList.add('chosen');
+            //used for speed of animation and for stop and start              
+            await this.waitUntil()
+            if (inputArr[j].value > inputArr[j + 1].value) {
+                let tmp = inputArr[j];
+                inputArr[j] = inputArr[j + 1];
+                inputArr[j + 1] = tmp;
+                this.setState({dataArray: inputArr})  
+            }
+            document.getElementById(`node-${inputArr[j].value}`).classList.remove('chosen');
+            document.getElementById(`node-${inputArr[j+1].value}`).classList.remove('chosen');
+        }
     }
+    return inputArr;
+};
 
-    //ersätter vi med algoritmerna
-    changeValue(){
-        var tempArray = this.state.dataArray;
-        //animation
-        setChoosen(tempArray[0].value);
-        //set value
-        tempArray[0].value = 1000;
-        //update global state
+   waitUntil(){
+    return new Promise((resolve) => {
+        let interval = setInterval(() => {
+            if (stop) {
+                return
+            }
+            clearInterval(interval)
+            resolve()
+        }, animation_speed)
+    })
+}  
 
-        //update global state
-        this.setState({dataArray: tempArray})  
-    }
-    //ersätter vi med algoritmerna
-    changeValueBack(){
-        var tempArray = this.state.dataArray;
-        //animation
-        setChoosen(tempArray[0].value);
-        //set value
-        tempArray[0].value = 500;
-
-       //update global state
-        this.setState({dataArray: tempArray})  
-           
-    }
-
+//change to one button
+stop(){
+stop = true;
+}
+start(){
+stop = false;
+}
     render() {
         const {dataArray} = this.state;
         return (
             <>
-            <button  onClick={() => this.bubbleSort()}>Bubble Sort Test</button>  
-            <button  onClick={() => this.addMore()}>Add more</button>     
-            <button  onClick={() => this.changeValue() }>change value test</button>     
-            <button  onClick={() => this.changeValueBack() }>change value test back</button>     
+            <button  onClick={() => this.bubbleSort()}>Bubble Sort </button>  
+            <button  onClick={() => this.bubbleSortEfficient()}>Bubble Sort - efficient </button>  
+            <button  onClick={() => this.stop()}>Stop Test</button>  
+            <button  onClick={() => this.start()}>Start Test</button>  
+
 
              {/*Shows current node beeing compared against*/}
             {currentNode}
@@ -142,21 +136,12 @@ export default class Visualize extends Component {
             </Node> 
             )
               })}
-
             </div>
            </>
         )
     }
 }
 
-const setChoosen = (value) =>{
-    var element =  document.getElementById(`node-${value}`);
-  
-    element.classList.add('chosen') 
-    element.classList.remove('chosen') 
-
-   
-}
 
 //-----------------------------------
 const getDataArray = () =>{
