@@ -9,13 +9,8 @@ var nodeWidth; // maybe remove
 // TO BE WORKED ON //
 //one we compare against
 var currentNode;
-var animation_speed = 200;
+var animation_speed = 1;
 var stop = false;
-//
-
-// Returns a Promise that resolves after "ms" Milliseconds used for animation
-const timer = ms => new Promise(res => setTimeout(res, ms))
-
 export default class Visualize extends Component {
     constructor(){
         super();
@@ -66,7 +61,9 @@ export default class Visualize extends Component {
             document.getElementById(`node-${inputArr[i].value}`).classList.remove('chosen');
             document.getElementById(`node-${inputArr[i+1].value}`).classList.remove('chosen');
         }
-      } while (swapped);    
+      } while (swapped);
+       //Animate sorted
+  this.animateSorted(inputArr)    
   }
 
   async bubbleSort(){
@@ -89,8 +86,51 @@ export default class Visualize extends Component {
             document.getElementById(`node-${inputArr[j+1].value}`).classList.remove('chosen');
         }
     }
-    return inputArr;
+     //Animate sorted
+  this.animateSorted(inputArr);
 };
+
+//what version of selection sort is this?????????
+async selectionSort(){
+    var arr = this.state.dataArray
+    var minIdx, temp, 
+        len = arr.length;
+    for(var i = 0; i < len; i++){
+      //used for speed of animation and for stop and start              
+      minIdx = i;
+      currentNode = arr[minIdx].value;
+      await this.waitUntil()
+      for(var  j = i+1; j<len; j++){
+        currentNode = arr[minIdx].value;
+        document.getElementById(`node-${arr[minIdx].value}`).classList.add('chosen');
+        document.getElementById(`node-${arr[j].value}`).classList.add('chosen');
+        await this.waitUntil()
+        //current
+         if(arr[j].value<arr[minIdx].value){
+            document.getElementById(`node-${arr[minIdx].value}`).classList.remove('chosen');
+            minIdx = j;
+            currentNode = arr[minIdx].value;
+            document.getElementById(`node-${arr[minIdx].value}`).classList.add('chosen');
+         }
+         document.getElementById(`node-${arr[j].value}`).classList.remove('chosen');
+      }
+      temp = arr[i];
+      arr[i] = arr[minIdx];
+      arr[minIdx] = temp;
+      this.setState({dataArray: arr})  
+      document.getElementById(`node-${arr[minIdx].value}`).classList.remove('chosen');
+      document.getElementById(`node-${arr[i].value}`).classList.remove('chosen');
+    }
+  //Animate sorted
+  this.animateSorted(arr)
+  }
+
+  async animateSorted(array){
+    for (let i = 0; i < array.length; i++) {
+     await this.waitUntil()
+     document.getElementById(`node-${array[i].value}`).classList.add('sorted');
+    }
+  }
 
    waitUntil(){
     return new Promise((resolve) => {
@@ -102,8 +142,17 @@ export default class Visualize extends Component {
             resolve()
         }, animation_speed)
     })
-}  
+} 
 
+async reset(){
+    this.setState({dataArray: getDataArray()}); 
+    var array = this.state.dataArray;
+    for (let i = 0; i< array.length; i++) {
+        await this.waitUntil()
+        document.getElementById(`node-${array[i].value}`).classList.remove('sorted');
+       }
+
+}
 //change to one button
 stop(){
 stop = true;
@@ -115,12 +164,12 @@ stop = false;
         const {dataArray} = this.state;
         return (
             <>
+            <button  onClick={() => this.selectionSort()}>Selection Sort</button>  
             <button  onClick={() => this.bubbleSort()}>Bubble Sort </button>  
             <button  onClick={() => this.bubbleSortEfficient()}>Bubble Sort - efficient </button>  
-            <button  onClick={() => this.stop()}>Stop Test</button>  
-            <button  onClick={() => this.start()}>Start Test</button>  
-
-
+            <button  onClick={() => this.stop()}>Stop</button>  
+            <button  onClick={() => this.start()}>Start</button>  
+            <button  onClick={() => this.reset()}>Reset</button>  
              {/*Shows current node beeing compared against*/}
             {currentNode}
 
@@ -141,7 +190,6 @@ stop = false;
         )
     }
 }
-
 
 //-----------------------------------
 const getDataArray = () =>{
