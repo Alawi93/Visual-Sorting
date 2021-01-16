@@ -9,7 +9,7 @@ var nodeWidth; // maybe remove
 // TO BE WORKED ON //
 //one we compare against
 var currentNode;
-var animation_speed = 1;
+var animation_speed = 200;
 var stop = false;
 export default class Visualize extends Component {
     constructor(){
@@ -124,9 +124,35 @@ async selectionSort(){
   //Animate sorted
   this.animateSorted(arr)
   }
+  //working on atm----------------------------
+ async insertionSort(){
+     var inputArr = this.state.dataArray;
+      let length = inputArr.length;
+    for (let i = 1; i < length; i++) {
+        await this.waitUntil()
+        let key = inputArr[i].value;
+        document.getElementById(`node-${key}`).classList.add('chosen');
+        let j = i - 1;
+        while (j >= 0 && inputArr[j].value > key) {
+            await this.waitUntil()
+            document.getElementById(`node-${inputArr[j + 1].value}`).classList.remove('chosen1');
+            inputArr[j + 1].value = inputArr[j].value;
+            j = j - 1;
+            document.getElementById(`node-${inputArr[j + 1].value}`).classList.add('chosen1');
+        }
+        document.getElementById(`node-${key}`).classList.remove('chosen');
+        inputArr[j + 1].value = key;
+        this.setState({dataArray: inputArr})  
+    }
+    //Animate sorted
+  this.animateSorted(inputArr)
+  }
 
   async animateSorted(array){
     for (let i = 0; i < array.length; i++) {
+        if(document.getElementById(`node-${array[i].value}`).classList == 'node chosen1'){
+            document.getElementById(`node-${array[i].value}`).classList.remove('chosen1')
+        }
      await this.waitUntil()
      document.getElementById(`node-${array[i].value}`).classList.add('sorted');
     }
@@ -164,6 +190,8 @@ stop = false;
         const {dataArray} = this.state;
         return (
             <>
+            <button  onClick={() => this.insertionSort()}>Insertion Sort test</button>  
+
             <button  onClick={() => this.selectionSort()}>Selection Sort</button>  
             <button  onClick={() => this.bubbleSort()}>Bubble Sort </button>  
             <button  onClick={() => this.bubbleSortEfficient()}>Bubble Sort - efficient </button>  
