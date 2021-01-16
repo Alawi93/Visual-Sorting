@@ -11,12 +11,9 @@
 .sorted{
   background-color: #3ef307;
 }
-
-/*
-animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-*/
+.chosen1{
+  background-color: #75d13f;
+}
 .chosen{
   background-color: #75d13f;
   border: 1px solid #e50000;
