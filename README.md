@@ -6,6 +6,8 @@
 
 ### Visual Sorting Algorithms | `visualization of different sorting algorithms`
      
-
+---
+## Currently under construction 👷 👌 
+#### Demo version available: 
 
  
