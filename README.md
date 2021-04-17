@@ -7,7 +7,7 @@
 ### Visual Sorting Algorithms | `visualization of different sorting algorithms`
      
 ---
-## OBS - Currently under construction 👷 👌 :  Created for bigger screens, zoom out if its an issue :).
+## OBS - Currently in demo version 👷 👌 :  Created for bigger screens, zoom out if its an issue :).
 
 #### Demo version available:  https://alawi93.github.io/Visual-Sorting/
 
